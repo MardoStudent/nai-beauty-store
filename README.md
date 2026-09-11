@@ -1,6 +1,8 @@
- # NAI Beauty Store
+# Naï Beauty Store
 
-# Site e-commerce de produits de beaute construit avec React et Vite.
+> Une boutique en ligne elegante et responsive pour decouvrir les produits Naï Beauty et commander simplement via WhatsApp.
+
+![Apercu produit Naï Beauty](./public/Screenshot%202026-09-04%20095351.png)
 
 ## Fonctionnalites
 
@@ -11,12 +13,18 @@
 - Espace d'administration pour gerer le contenu du site
 - Interface responsive pour mobile et desktop
 
-## Technologies
+## Ce que propose le projet
 
+- Une page d'accueil orientee marque
+- Un catalogue avec filtres et fiches produit
+- Un panier avec calcul des quantites et du total
+- Une commande rapide via WhatsApp
+- Un espace d'administration pour modifier le contenu du site
+- Un affichage adapte aux mobiles, tablettes et ordinateurs
 
-## Expanding the Oxlint configuration
+## Stack technique
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+`React` · `Vite` · `React Router` · `Lucide React` · `Oxlint`
 ## Installation
 
 Prerequis : Node.js et npm.
