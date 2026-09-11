@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef } from 'react';
 import { SiteContentContext } from '../context/SiteContentContext';
 import { Save, RotateCcw, Plus, Trash2, Upload, Check } from 'lucide-react';
+import { readImageAsDataUrl } from '../utils/image';
 
 /* --- Petits champs réutilisables --- */
 const Field = ({ label, value, onChange, placeholder }) => (
@@ -23,10 +24,10 @@ const ImageField = ({ label, value, onChange }) => {
   const ref = useRef(null);
   const onFile = (e) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => onChange(reader.result);
-    reader.readAsDataURL(file);
+    if (!file) return;
+    readImageAsDataUrl(file)
+      .then(onChange)
+      .catch((error) => window.alert(error.message));
   };
   return (
     <div className="input-group" style={{ gridColumn: '1 / -1' }}>

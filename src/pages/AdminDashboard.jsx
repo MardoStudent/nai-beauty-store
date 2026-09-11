@@ -4,6 +4,7 @@ import { ProductContext } from '../context/ProductContext';
 import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate } from 'lucide-react';
 import { CURRENCY } from '../config';
 import SiteContentEditor from '../components/SiteContentEditor';
+import { readImageAsDataUrl } from '../utils/image';
 
 const EMPTY_PRODUCT = { name: '', brand: '', price: '', image: '', category: '' };
 
@@ -53,17 +54,12 @@ const AdminDashboard = () => {
     setForm(EMPTY_PRODUCT);
   };
 
-  // Upload d'image réel : lecture du fichier → base64 stocké dans le champ image
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      alert('Veuillez sélectionner un fichier image.');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => setForm((f) => ({ ...f, image: reader.result }));
-    reader.readAsDataURL(file);
+    readImageAsDataUrl(file)
+      .then((image) => setForm((f) => ({ ...f, image })))
+      .catch((error) => window.alert(error.message));
   };
 
   const handleSubmit = (e) => {

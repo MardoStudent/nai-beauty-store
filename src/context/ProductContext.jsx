@@ -18,7 +18,11 @@ export const ProductProvider = ({ children }) => {
 
   // Save to local storage whenever products change
   useEffect(() => {
-    localStorage.setItem('naiProducts', JSON.stringify(products));
+    try {
+      localStorage.setItem('naiProducts', JSON.stringify(products));
+    } catch {
+      window.alert('Image trop volumineuse pour le stockage du navigateur. Choisissez une image plus légère.');
+    }
   }, [products]);
 
   const addProduct = (product) => {

@@ -91,7 +91,11 @@ export const SiteContentProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('naiSiteContent', JSON.stringify(content));
+    try {
+      localStorage.setItem('naiSiteContent', JSON.stringify(content));
+    } catch {
+      window.alert('Image trop volumineuse pour le stockage du navigateur. Choisissez une image plus légère.');
+    }
   }, [content]);
 
   const updateContent = useCallback((next) => {
