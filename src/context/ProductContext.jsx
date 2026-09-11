@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
 export const ProductContext = createContext();
 
@@ -16,8 +17,15 @@ export const ProductProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : defaultProducts;
   });
 
-  // Save to local storage whenever products change
   useEffect(() => {
+    if (!supabase) return;
+    supabase.from('products').select('*').order('created_at', { ascending: true }).then(({ data, error }) => {
+      if (!error && data?.length) setProducts(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (supabase) return;
     try {
       localStorage.setItem('naiProducts', JSON.stringify(products));
     } catch {
@@ -25,16 +33,32 @@ export const ProductProvider = ({ children }) => {
     }
   }, [products]);
 
-  const addProduct = (product) => {
-    setProducts([...products, { ...product, id: Date.now() }]);
+  const addProduct = async (product) => {
+    if (supabase) {
+      const { data, error } = await supabase.from('products').insert(product).select().single();
+      if (error) throw error;
+      setProducts((current) => [...current, data]);
+      return;
+    }
+    setProducts((current) => [...current, { ...product, id: Date.now() }]);
   };
 
-  const updateProduct = (id, updatedProduct) => {
-    setProducts(products.map(p => p.id === id ? { ...p, ...updatedProduct } : p));
+  const updateProduct = async (id, updatedProduct) => {
+    if (supabase) {
+      const { data, error } = await supabase.from('products').update(updatedProduct).eq('id', id).select().single();
+      if (error) throw error;
+      setProducts((current) => current.map((product) => product.id === id ? data : product));
+      return;
+    }
+    setProducts((current) => current.map((product) => product.id === id ? { ...product, ...updatedProduct } : product));
   };
 
-  const deleteProduct = (id) => {
-    setProducts(products.filter(p => p.id !== id));
+  const deleteProduct = async (id) => {
+    if (supabase) {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
+    }
+    setProducts((current) => current.filter((product) => product.id !== id));
   };
 
   return (

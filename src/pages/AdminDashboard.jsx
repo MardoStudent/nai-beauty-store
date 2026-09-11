@@ -5,6 +5,8 @@ import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate } from 
 import { CURRENCY } from '../config';
 import SiteContentEditor from '../components/SiteContentEditor';
 import { readImageAsDataUrl } from '../utils/image';
+import { supabase } from '../lib/supabase';
+import { uploadImage } from '../lib/storage';
 
 const EMPTY_PRODUCT = { name: '', brand: '', price: '', image: '', category: '' };
 
@@ -57,12 +59,13 @@ const AdminDashboard = () => {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    readImageAsDataUrl(file)
+    const readImage = supabase ? uploadImage(file) : readImageAsDataUrl(file);
+    readImage
       .then((image) => setForm((f) => ({ ...f, image })))
       .catch((error) => window.alert(error.message));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
       ...form,
@@ -70,12 +73,16 @@ const AdminDashboard = () => {
       image: form.image || '/WhatsApp Image 2026-08-31 at 21.14.20.jpeg',
     };
 
-    if (editingId) {
-      updateProduct(editingId, payload);
-    } else {
-      addProduct(payload);
+    try {
+      if (editingId) {
+        await updateProduct(editingId, payload);
+      } else {
+        await addProduct(payload);
+      }
+      closeForm();
+    } catch (error) {
+      window.alert(`Impossible d'enregistrer le produit : ${error.message}`);
     }
-    closeForm();
   };
 
   return (

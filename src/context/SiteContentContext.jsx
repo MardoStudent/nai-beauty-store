@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabase';
 
 export const SiteContentContext = createContext();
 
@@ -81,6 +82,7 @@ const deepMerge = (base, override) => {
 };
 
 export const SiteContentProvider = ({ children }) => {
+  const [loaded, setLoaded] = useState(!supabase);
   const [content, setContent] = useState(() => {
     try {
       const saved = localStorage.getItem('naiSiteContent');
@@ -91,12 +93,27 @@ export const SiteContentProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    if (!supabase) return;
+    supabase.from('site_content').select('content').eq('id', 1).maybeSingle().then(({ data }) => {
+      if (data?.content) setContent((current) => deepMerge(current, data.content));
+      setLoaded(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    if (supabase) {
+      supabase.from('site_content').upsert({ id: 1, content, updated_at: new Date().toISOString() }).then(({ error }) => {
+        if (error) window.alert(`Erreur de sauvegarde : ${error.message}`);
+      });
+      return;
+    }
     try {
       localStorage.setItem('naiSiteContent', JSON.stringify(content));
     } catch {
       window.alert('Image trop volumineuse pour le stockage du navigateur. Choisissez une image plus légère.');
     }
-  }, [content]);
+  }, [content, loaded]);
 
   const updateContent = useCallback((next) => {
     setContent((prev) => deepMerge(prev, next));

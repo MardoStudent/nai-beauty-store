@@ -2,6 +2,8 @@ import React, { useContext, useState, useRef } from 'react';
 import { SiteContentContext } from '../context/SiteContentContext';
 import { Save, RotateCcw, Plus, Trash2, Upload, Check } from 'lucide-react';
 import { readImageAsDataUrl } from '../utils/image';
+import { supabase } from '../lib/supabase';
+import { uploadImage } from '../lib/storage';
 
 /* --- Petits champs réutilisables --- */
 const Field = ({ label, value, onChange, placeholder }) => (
@@ -25,7 +27,7 @@ const ImageField = ({ label, value, onChange }) => {
   const onFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    readImageAsDataUrl(file)
+    (supabase ? uploadImage(file, 'site') : readImageAsDataUrl(file))
       .then(onChange)
       .catch((error) => window.alert(error.message));
   };
