@@ -30,7 +30,16 @@ const ImageField = ({ label, value, onChange }) => {
     if (!file) return;
     try {
       const optimized = await compressImage(file);
-      const image = supabase ? await uploadImage(optimized, 'site') : await readImageAsDataUrl(optimized);
+      let image;
+      if (supabase) {
+        try {
+          image = await uploadImage(optimized, 'site');
+        } catch {
+          image = await readImageAsDataUrl(optimized);
+        }
+      } else {
+        image = await readImageAsDataUrl(optimized);
+      }
       onChange(image);
     } catch (error) {
       window.alert(error.message);

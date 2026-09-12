@@ -69,7 +69,16 @@ const AdminDashboard = () => {
     setUploading(true);
     try {
       const optimized = await compressImage(file);
-      const image = supabase ? await uploadImage(optimized) : await readImageAsDataUrl(optimized);
+      let image;
+      if (supabase) {
+        try {
+          image = await uploadImage(optimized); // stockage en ligne (idéal)
+        } catch {
+          image = await readImageAsDataUrl(optimized); // secours si le bucket n'existe pas
+        }
+      } else {
+        image = await readImageAsDataUrl(optimized);
+      }
       setForm((f) => ({ ...f, image }));
     } catch (error) {
       window.alert(error.message);
