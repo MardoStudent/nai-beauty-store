@@ -1,68 +1,93 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../supabaseClient';
 
 export const ProductContext = createContext();
 
-// Default products to populate the store initially
-const defaultProducts = [
-  { id: 1, name: 'Eau de Parfum Bloom', brand: 'Gucci', price: 4950, image: '/Screenshot 2026-09-04 095351.png', category: 'Parfums' },
-  { id: 2, name: 'Gloss Brillance Ultime', brand: 'Naï Makeup', price: 2700, image: '/Screenshot 2026-09-04 095413.png', category: 'Maquillage' },
-  { id: 3, name: 'Roller Quartz Rose', brand: 'Naï Devices', price: 4050, image: '/WhatsApp Image 2026-08-31 at 21.15.48.jpeg', category: 'Appareils' },
-  { id: 4, name: 'Tumbler Nœud Bleu', brand: 'Naï Home', price: 2200, image: '/Screenshot 2026-09-04 095441.png', category: 'Maison' }
-];
-
 export const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState(() => {
-    const saved = localStorage.getItem('naiProducts');
-    return saved ? JSON.parse(saved) : defaultProducts;
-  });
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // 1. Lire (Fetch) les produits depuis Supabase
   useEffect(() => {
-    if (!supabase) return;
-    supabase.from('products').select('*').order('created_at', { ascending: true }).then(({ data, error }) => {
-      if (!error && data?.length) setProducts(data);
-    });
+    const fetchProducts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .order('id', { ascending: false }); // Les plus récents en premier
+        
+        if (error) throw error;
+        if (data) setProducts(data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des produits:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  useEffect(() => {
-    if (supabase) return;
-    try {
-      localStorage.setItem('naiProducts', JSON.stringify(products));
-    } catch {
-      window.alert('Image trop volumineuse pour le stockage du navigateur. Choisissez une image plus légère.');
-    }
-  }, [products]);
-
+  // 2. Ajouter un produit (Insert)
   const addProduct = async (product) => {
-    if (supabase) {
-      const { data, error } = await supabase.from('products').insert(product).select().single();
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .insert([{ 
+          name: product.name,
+          brand: product.brand,
+          price: product.price,
+          image: product.image,
+          category: product.category
+        }])
+        .select(); // On demande à Supabase de nous renvoyer la ligne créée
+
       if (error) throw error;
-      setProducts((current) => [...current, data]);
-      return;
+      if (data) {
+        setProducts([data[0], ...products]); // On ajoute le nouveau produit en haut de la liste
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout du produit:', error.message);
+      alert('Erreur lors de la sauvegarde sur la base de données.');
     }
-    setProducts((current) => [...current, { ...product, id: Date.now() }]);
   };
 
-  const updateProduct = async (id, updatedProduct) => {
-    if (supabase) {
-      const { data, error } = await supabase.from('products').update(updatedProduct).eq('id', id).select().single();
+  // 3. Modifier un produit (Update)
+  const updateProduct = async (id, updatedFields) => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .update(updatedFields)
+        .eq('id', id)
+        .select();
+
       if (error) throw error;
-      setProducts((current) => current.map((product) => product.id === id ? data : product));
-      return;
+      if (data) {
+        setProducts(products.map(p => p.id === id ? data[0] : p));
+      }
+    } catch (error) {
+      console.error('Erreur lors de la modification:', error.message);
     }
-    setProducts((current) => current.map((product) => product.id === id ? { ...product, ...updatedProduct } : product));
   };
 
+  // 4. Supprimer un produit (Delete)
   const deleteProduct = async (id) => {
-    if (supabase) {
-      const { error } = await supabase.from('products').delete().eq('id', id);
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+
       if (error) throw error;
+      setProducts(products.filter(p => p.id !== id));
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error.message);
+      alert('Erreur lors de la suppression.');
     }
-    setProducts((current) => current.filter((product) => product.id !== id));
   };
 
   return (
-    <ProductContext.Provider value={{ products, addProduct, updateProduct, deleteProduct }}>
+    <ProductContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, loading }}>
       {children}
     </ProductContext.Provider>
   );
