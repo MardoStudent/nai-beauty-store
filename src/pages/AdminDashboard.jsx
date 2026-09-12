@@ -5,6 +5,7 @@ import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate } from 
 import { CURRENCY } from '../config';
 import SiteContentEditor from '../components/SiteContentEditor';
 import { readImageAsDataUrl } from '../utils/image';
+import { supabase } from '../supabaseClient';
 import { uploadImage } from '../lib/storage';
 
 const EMPTY_PRODUCT = { name: '', brand: '', price: '', image: '', category: '' };
