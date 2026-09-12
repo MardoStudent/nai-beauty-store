@@ -2,6 +2,7 @@ import React, { useContext, useState, useRef } from 'react';
 import { SiteContentContext } from '../context/SiteContentContext';
 import { Save, RotateCcw, Plus, Trash2, Upload, Check } from 'lucide-react';
 import { readImageAsDataUrl } from '../utils/image';
+import { compressImage } from '../utils/compressImage';
 import { supabase } from '../supabaseClient';
 import { uploadImage } from '../lib/storage';
 
@@ -24,12 +25,16 @@ const Area = ({ label, value, onChange, rows = 3 }) => (
 
 const ImageField = ({ label, value, onChange }) => {
   const ref = useRef(null);
-  const onFile = (e) => {
+  const onFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    (supabase ? uploadImage(file, 'site') : readImageAsDataUrl(file))
-      .then(onChange)
-      .catch((error) => window.alert(error.message));
+    try {
+      const optimized = await compressImage(file);
+      const image = supabase ? await uploadImage(optimized, 'site') : await readImageAsDataUrl(optimized);
+      onChange(image);
+    } catch (error) {
+      window.alert(error.message);
+    }
   };
   return (
     <div className="input-group" style={{ gridColumn: '1 / -1' }}>

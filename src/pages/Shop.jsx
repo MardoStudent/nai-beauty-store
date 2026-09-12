@@ -3,7 +3,7 @@ import { ProductContext } from '../context/ProductContext';
 import MasonryCard from '../components/MasonryCard';
 import { Search } from 'lucide-react';
 
-const CATEGORIES = ['Tout', 'Soins', 'Maquillage', 'Parfums', 'Appareils', 'Maison'];
+const BASE_CATEGORIES = ['Soins', 'Maquillage', 'Parfums', 'Appareils', 'Maison'];
 
 const Shop = () => {
   const { products } = useContext(ProductContext);
@@ -13,6 +13,14 @@ const Shop = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Catégories = les catégories de base + toute catégorie perso ajoutée par l'admin
+  const categories = useMemo(() => {
+    const custom = products
+      .map((p) => p.category)
+      .filter((c) => c && !BASE_CATEGORIES.includes(c));
+    return ['Tout', ...BASE_CATEGORIES, ...[...new Set(custom)]];
+  }, [products]);
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -50,7 +58,7 @@ const Shop = () => {
 
         {/* Filtres catégories */}
         <div className="filter-bar">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               className={`filter-pill ${activeCat === cat ? 'active' : ''}`}

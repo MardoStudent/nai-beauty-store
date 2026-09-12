@@ -5,8 +5,11 @@ import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate } from 
 import { CURRENCY } from '../config';
 import SiteContentEditor from '../components/SiteContentEditor';
 import { readImageAsDataUrl } from '../utils/image';
+import { compressImage } from '../utils/compressImage';
 import { supabase } from '../supabaseClient';
 import { uploadImage } from '../lib/storage';
+
+const PRESET_CATEGORIES = ['Soins', 'Maquillage', 'Parfums', 'Appareils', 'Maison'];
 
 const EMPTY_PRODUCT = { name: '', brand: '', price: '', image: '', category: '' };
 
@@ -17,6 +20,8 @@ const AdminDashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState(null); // null = ajout, sinon = édition
   const [form, setForm] = useState(EMPTY_PRODUCT);
+  const [uploading, setUploading] = useState(false);
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -33,6 +38,7 @@ const AdminDashboard = () => {
   const openAddForm = () => {
     setEditingId(null);
     setForm(EMPTY_PRODUCT);
+    setIsCustomCategory(false);
     setIsFormOpen(true);
   };
 
@@ -45,6 +51,7 @@ const AdminDashboard = () => {
       image: product.image || '',
       category: product.category || '',
     });
+    setIsCustomCategory(Boolean(product.category) && !PRESET_CATEGORIES.includes(product.category));
     setIsFormOpen(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -53,15 +60,22 @@ const AdminDashboard = () => {
     setIsFormOpen(false);
     setEditingId(null);
     setForm(EMPTY_PRODUCT);
+    setIsCustomCategory(false);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const readImage = supabase ? uploadImage(file) : readImageAsDataUrl(file);
-    readImage
-      .then((image) => setForm((f) => ({ ...f, image })))
-      .catch((error) => window.alert(error.message));
+    setUploading(true);
+    try {
+      const optimized = await compressImage(file);
+      const image = supabase ? await uploadImage(optimized) : await readImageAsDataUrl(optimized);
+      setForm((f) => ({ ...f, image }));
+    } catch (error) {
+      window.alert(error.message);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -136,14 +150,40 @@ const AdminDashboard = () => {
                 </div>
                 <div className="input-group">
                   <label>Catégorie</label>
-                  <select required value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="modern-input">
+                  <select
+                    required={!isCustomCategory}
+                    value={isCustomCategory ? '__autre__' : form.category}
+                    onChange={e => {
+                      if (e.target.value === '__autre__') {
+                        setIsCustomCategory(true);
+                        setForm({ ...form, category: '' });
+                      } else {
+                        setIsCustomCategory(false);
+                        setForm({ ...form, category: e.target.value });
+                      }
+                    }}
+                    className="modern-input"
+                  >
                     <option value="">Sélectionner...</option>
                     <option value="Soins">Soins du Visage</option>
                     <option value="Maquillage">Maquillage</option>
                     <option value="Parfums">Parfums</option>
                     <option value="Appareils">Appareils</option>
                     <option value="Maison">Maison & Accessoires</option>
+                    <option value="__autre__">➕ Autre (préciser)...</option>
                   </select>
+                  {isCustomCategory && (
+                    <input
+                      type="text"
+                      required
+                      placeholder="Nom de la nouvelle catégorie"
+                      value={form.category}
+                      onChange={e => setForm({ ...form, category: e.target.value })}
+                      className="modern-input"
+                      style={{ marginTop: '0.6rem' }}
+                      autoFocus
+                    />
+                  )}
                 </div>
 
                 {/* Upload d'image */}
@@ -165,10 +205,10 @@ const AdminDashboard = () => {
                         onChange={handleFileChange}
                         style={{ display: 'none' }}
                       />
-                      <button type="button" className="btn-secondary flex-center gap-2" onClick={() => fileInputRef.current?.click()}>
-                        <Upload size={16} /> Choisir une image
+                      <button type="button" className="btn-secondary flex-center gap-2" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                        <Upload size={16} /> {uploading ? 'Envoi en cours...' : 'Choisir une image'}
                       </button>
-                      <span className="upload-hint">ou collez un lien ci-dessous</span>
+                      <span className="upload-hint">Photo optimisée automatiquement (rapide, même en gros fichier). Ou collez un lien ci-dessous.</span>
                       <input
                         type="text"
                         placeholder="https://... ou /image.jpg"
@@ -181,8 +221,8 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="input-group submit-group" style={{ display: 'flex', alignItems: 'flex-end', gridColumn: '1 / -1' }}>
-                  <button type="submit" className="btn-primary w-full">
-                    {editingId ? 'Enregistrer les modifications' : 'Ajouter le produit'}
+                  <button type="submit" className="btn-primary w-full" disabled={uploading}>
+                    {uploading ? 'Photo en cours...' : (editingId ? 'Enregistrer les modifications' : 'Ajouter le produit')}
                   </button>
                 </div>
               </form>
