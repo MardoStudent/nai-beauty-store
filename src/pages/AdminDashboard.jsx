@@ -5,7 +5,6 @@ import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate } from 
 import { CURRENCY } from '../config';
 import SiteContentEditor from '../components/SiteContentEditor';
 import { readImageAsDataUrl } from '../utils/image';
-import { supabase } from '../lib/supabase';
 import { uploadImage } from '../lib/storage';
 
 const EMPTY_PRODUCT = { name: '', brand: '', price: '', image: '', category: '' };
@@ -20,8 +19,7 @@ const AdminDashboard = () => {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
-    if (!isLoggedIn) {
+    if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
       navigate('/admin');
     }
   }, [navigate]);

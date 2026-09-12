@@ -1,7 +1,7 @@
 // --- CONFIGURATION BOUTIQUE ---
 // ⚠️ Remplace ce numéro par le VRAI numéro WhatsApp de la boutique (format international, sans + ni espaces).
 // Exemple Haïti : "50912345678"
-export const WHATSAPP_NUMBER = '50947135534';
+export const WHATSAPP_NUMBER = '50956486942';
 
 // Nom affiché dans le message de commande
 export const STORE_NAME = 'Naï Beauty';

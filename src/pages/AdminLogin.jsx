@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
+
+const ADMIN_PIN = '2026';
 
 const AdminLogin = () => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Si déjà connecté, on va directement au tableau de bord
+  useEffect(() => {
+    if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+      navigate('/admin/dashboard');
+    }
+  }, [navigate]);
+
   const handleLogin = (e) => {
     e.preventDefault();
-    if (pin === '2026') { // Simple PIN for demo (year)
+    if (pin === ADMIN_PIN) {
       localStorage.setItem('isAdminLoggedIn', 'true');
       navigate('/admin/dashboard');
     } else {
-      setError('Code PIN incorrect. Indice: 2026');
+      setError('Code PIN incorrect.');
       setPin('');
     }
   };
@@ -29,12 +38,12 @@ const AdminLogin = () => {
         <p style={{ color: 'var(--color-text-light)', fontSize: '0.9rem', marginBottom: '2rem' }}>
           Espace réservé à la direction Naï Beauty.
         </p>
-        
+
         <form onSubmit={handleLogin} className="login-form">
-          <input 
-            type="password" 
-            placeholder="Code PIN" 
-            value={pin} 
+          <input
+            type="password"
+            placeholder="Code PIN"
+            value={pin}
             onChange={(e) => setPin(e.target.value)}
             className="pin-input"
             maxLength={4}

@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef } from 'react';
 import { SiteContentContext } from '../context/SiteContentContext';
 import { Save, RotateCcw, Plus, Trash2, Upload, Check } from 'lucide-react';
 import { readImageAsDataUrl } from '../utils/image';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../supabaseClient';
 import { uploadImage } from '../lib/storage';
 
 /* --- Petits champs réutilisables --- */
