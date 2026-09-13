@@ -4,7 +4,6 @@ import { ProductContext } from '../context/ProductContext';
 import { SiteContentContext } from '../context/SiteContentContext';
 import ProductCard from '../components/ProductCard';
 import { ArrowRight, Truck, ShieldCheck, MessageCircle, Heart, Star, Sparkles } from 'lucide-react';
-import { FREE_SHIPPING_THRESHOLD, CURRENCY } from '../config';
 
 const BENEFIT_ICONS = [Truck, ShieldCheck, MessageCircle, Heart];
 
@@ -14,7 +13,6 @@ const Home = () => {
   const { hero, benefits, featured, welcome, categories, testimonials, cta } = content;
 
   const featuredProducts = products.slice(0, 4);
-  const freeShipping = Number(FREE_SHIPPING_THRESHOLD).toLocaleString('fr-HT');
 
   return (
     <div className="page-transition">
@@ -79,12 +77,14 @@ const Home = () => {
       {/* MARQUEE */}
       <div className="marquee-container">
         <div className="marquee-content">
-          <span className="marquee-item">Livraison gratuite dès {freeShipping} {CURRENCY}</span><span className="marquee-item">•</span>
           <span className="marquee-item">Produits 100% Authentiques</span><span className="marquee-item">•</span>
           <span className="marquee-item">Design Coquette Chic</span><span className="marquee-item">•</span>
           <span className="marquee-item">Paiement Sécurisé</span><span className="marquee-item">•</span>
-          <span className="marquee-item">Livraison gratuite dès {freeShipping} {CURRENCY}</span><span className="marquee-item">•</span>
-          <span className="marquee-item">Produits 100% Authentiques</span>
+          <span className="marquee-item">Livraison partout en Haïti</span><span className="marquee-item">•</span>
+          <span className="marquee-item">Produits 100% Authentiques</span><span className="marquee-item">•</span>
+          <span className="marquee-item">Design Coquette Chic</span><span className="marquee-item">•</span>
+          <span className="marquee-item">Paiement Sécurisé</span><span className="marquee-item">•</span>
+          <span className="marquee-item">Livraison partout en Haïti</span>
         </div>
       </div>
 
