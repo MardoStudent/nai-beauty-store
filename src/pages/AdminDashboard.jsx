@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductContext } from '../context/ProductContext';
-import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate } from 'lucide-react';
+import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate, Search, PackageOpen, ImageOff } from 'lucide-react';
 import { CURRENCY } from '../config';
 import SiteContentEditor from '../components/SiteContentEditor';
 import { readImageAsDataUrl } from '../utils/image';
@@ -22,7 +22,24 @@ const AdminDashboard = () => {
   const [form, setForm] = useState(EMPTY_PRODUCT);
   const [uploading, setUploading] = useState(false);
   const [isCustomCategory, setIsCustomCategory] = useState(false);
+  const [adminQuery, setAdminQuery] = useState('');
   const fileInputRef = useRef(null);
+
+  const filteredProducts = products.filter((p) => {
+    const q = adminQuery.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      p.name?.toLowerCase().includes(q) ||
+      p.brand?.toLowerCase().includes(q) ||
+      p.category?.toLowerCase().includes(q)
+    );
+  });
+
+  const confirmDelete = (product) => {
+    if (window.confirm(`Supprimer « ${product.name} » ? Cette action est définitive.`)) {
+      deleteProduct(product.id);
+    }
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
@@ -238,47 +255,70 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          <div className="product-list glass-card">
-            <div className="table-responsive">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Image</th>
-                    <th>Produit</th>
-                    <th>Catégorie</th>
-                    <th>Prix ({CURRENCY})</th>
-                    <th className="text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map(product => (
-                    <tr key={product.id}>
-                      <td>
-                        <img src={product.image} alt={product.name} className="admin-thumb" />
-                      </td>
-                      <td className="font-medium">
-                        <div>{product.name}</div>
-                        <div className="text-xs text-gray">{product.brand}</div>
-                      </td>
-                      <td>
-                        <span className="badge">{product.category || 'Général'}</span>
-                      </td>
-                      <td className="font-medium">{Number(product.price).toLocaleString('fr-HT')}</td>
-                      <td className="actions-cell text-right">
-                        <button className="icon-btn text-gray hover-primary mr-2" title="Modifier" onClick={() => openEditForm(product)}><Edit2 size={18} /></button>
-                        <button className="icon-btn text-danger hover-danger" onClick={() => deleteProduct(product.id)} title="Supprimer"><Trash2 size={18} /></button>
-                      </td>
-                    </tr>
-                  ))}
-                  {products.length === 0 && (
-                    <tr>
-                      <td colSpan="5" className="text-center py-8 text-gray">Aucun produit dans l'inventaire. Ajoutez-en un !</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+          {/* Recherche admin (utile dès qu'il y a beaucoup de produits) */}
+          {products.length > 0 && (
+            <div className="admin-search">
+              <Search size={18} className="admin-search-icon" />
+              <input
+                type="text"
+                placeholder="Rechercher dans vos produits..."
+                value={adminQuery}
+                onChange={(e) => setAdminQuery(e.target.value)}
+                className="admin-search-input"
+              />
+              {adminQuery && (
+                <button className="admin-search-clear" onClick={() => setAdminQuery('')} aria-label="Effacer">
+                  <X size={16} />
+                </button>
+              )}
             </div>
-          </div>
+          )}
+
+          {/* Liste des produits en cartes */}
+          {products.length === 0 ? (
+            <div className="admin-empty glass-card">
+              <PackageOpen size={48} strokeWidth={1.3} />
+              <h4>Aucun produit pour le moment</h4>
+              <p>Clique sur « Ajouter un produit » pour créer ta première fiche. ✨</p>
+              <button onClick={openAddForm} className="btn-primary flex-center gap-2">
+                <Plus size={16} /> Ajouter un produit
+              </button>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="admin-empty glass-card">
+              <Search size={44} strokeWidth={1.3} />
+              <h4>Aucun résultat</h4>
+              <p>Aucun produit ne correspond à « {adminQuery} ».</p>
+            </div>
+          ) : (
+            <div className="admin-product-grid">
+              {filteredProducts.map((product) => (
+                <div className="admin-product-card" key={product.id}>
+                  <div className="admin-card-media">
+                    {product.image ? (
+                      <img src={product.image} alt={product.name} loading="lazy" />
+                    ) : (
+                      <div className="admin-card-noimg"><ImageOff size={28} /></div>
+                    )}
+                    {product.category && <span className="admin-card-cat">{product.category}</span>}
+                    <div className="admin-card-actions">
+                      <button className="admin-action-btn edit" title="Modifier" onClick={() => openEditForm(product)}>
+                        <Edit2 size={16} />
+                      </button>
+                      <button className="admin-action-btn delete" title="Supprimer" onClick={() => confirmDelete(product)}>
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="admin-card-body">
+                    <span className="admin-card-brand">{product.brand || 'Naï Beauty'}</span>
+                    <h4 className="admin-card-name">{product.name}</h4>
+                    <div className="admin-card-price">{Number(product.price).toLocaleString('fr-HT')} {CURRENCY}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         )}
 

@@ -760,6 +760,91 @@
 }
 .editor-savebar .btn-primary.added { background: #2e7d32 !important; }
 
+/* ============================================
+   ADMIN : liste produits en cartes (belle & intuitive)
+   ============================================ */
+.admin-search {
+  position: relative; max-width: 460px; margin-bottom: 1.5rem;
+}
+.admin-search-icon {
+  position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--color-text-light);
+}
+.admin-search-input {
+  width: 100%; padding: 0.85rem 2.6rem; border-radius: 30px;
+  border: 1px solid var(--color-border); background: white; font-family: inherit; font-size: 0.9rem;
+  outline: none; transition: all 0.25s ease;
+}
+.admin-search-input:focus { border-color: #D48B8B; box-shadow: 0 4px 18px rgba(212,139,139,0.14); }
+.admin-search-clear {
+  position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%);
+  background: var(--color-primary-light); color: var(--color-text); border-radius: 50%;
+  width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+}
+.admin-search-clear:hover { background: #D48B8B; color: white; }
+
+.admin-product-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+}
+@media (min-width: 700px) { .admin-product-grid { grid-template-columns: repeat(3, 1fr); gap: 1.3rem; } }
+@media (min-width: 1050px) { .admin-product-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.admin-product-card {
+  background: white; border: 1px solid var(--color-border); border-radius: 18px; overflow: hidden;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  animation: slideUpFade 0.4s ease-out backwards;
+}
+.admin-product-card:hover {
+  transform: translateY(-5px); box-shadow: 0 16px 34px rgba(44,42,41,0.12); border-color: transparent;
+}
+.admin-card-media {
+  position: relative; aspect-ratio: 1/1; background: #F4F1EE; overflow: hidden;
+}
+.admin-card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.admin-product-card:hover .admin-card-media img { transform: scale(1.06); }
+.admin-card-noimg {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #C9BFB8;
+}
+.admin-card-cat {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+  color: var(--color-text); font-size: 0.62rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.8px; padding: 0.3rem 0.6rem; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.admin-card-actions {
+  position: absolute; top: 10px; right: 10px; z-index: 3; display: flex; gap: 0.4rem;
+  opacity: 0; transform: translateY(-6px); transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+.admin-product-card:hover .admin-card-actions { opacity: 1; transform: translateY(0); }
+.admin-action-btn {
+  width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); color: var(--color-text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s ease;
+}
+.admin-action-btn.edit:hover { background: var(--color-text); color: white; }
+.admin-action-btn.delete:hover { background: #E74C3C; color: white; }
+/* Sur mobile (pas de survol), on montre les actions en permanence */
+@media (hover: none) {
+  .admin-card-actions { opacity: 1; transform: none; }
+}
+
+.admin-card-body { padding: 0.9rem 1rem 1.1rem; }
+.admin-card-brand {
+  font-size: 0.62rem; color: #D48B8B; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600;
+}
+.admin-card-name {
+  font-family: var(--font-heading); font-size: 1.05rem; margin: 0.2rem 0 0.4rem; line-height: 1.25;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.admin-card-price { font-weight: 600; color: var(--color-text); font-size: 0.95rem; }
+
+.admin-empty {
+  text-align: center; padding: 3.5rem 2rem; display: flex; flex-direction: column;
+  align-items: center; gap: 0.8rem; color: var(--color-text-light);
+}
+.admin-empty h4 { font-family: var(--font-heading); font-size: 1.4rem; color: var(--color-text); margin-top: 0.5rem; }
+.admin-empty p { max-width: 360px; }
+.admin-empty .btn-primary { margin-top: 0.8rem; }
+
 /* --- FOOTER --- */
 .footer { background-color: var(--color-text); color: white; padding: 5rem 0 2rem; margin-top: auto; }
 .footer-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 3rem; }
