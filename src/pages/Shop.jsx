@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 const BASE_CATEGORIES = ['Soins', 'Maquillage', 'Parfums', 'Appareils', 'Maison'];
 
 const Shop = () => {
-  const { products } = useContext(ProductContext);
+  const { products, loading } = useContext(ProductContext);
   const [activeCat, setActiveCat] = useState('Tout');
   const [query, setQuery] = useState('');
 
@@ -69,6 +69,19 @@ const Shop = () => {
           ))}
         </div>
 
+        {loading ? (
+          <div className="masonry-grid mb-12" style={{ marginTop: '2rem' }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div className="pin-card" key={i}>
+                <div className="skeleton skeleton-img" style={{ height: `${180 + (i % 3) * 60}px` }} />
+                <div className="skeleton skeleton-line" style={{ width: '40%' }} />
+                <div className="skeleton skeleton-line" style={{ width: '80%' }} />
+                <div className="skeleton skeleton-line" style={{ width: '30%' }} />
+              </div>
+            ))}
+          </div>
+        ) : (
+        <>
         <p className="results-count">{filtered.length} produit{filtered.length > 1 ? 's' : ''}</p>
 
         {filtered.length === 0 ? (
@@ -81,6 +94,8 @@ const Shop = () => {
               <MasonryCard key={product.id} product={product} />
             ))}
           </div>
+        )}
+        </>
         )}
       </div>
     </div>

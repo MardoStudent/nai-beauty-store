@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ProductContext } from '../context/ProductContext';
 import { CartContext } from '../context/CartContext';
 import MasonryCard from '../components/MasonryCard';
-import { ShoppingBag, Plus, Minus, ArrowLeft, Check } from 'lucide-react';
+import { ShoppingBag, Plus, Minus, ArrowLeft, Check, Share2 } from 'lucide-react';
 import { CURRENCY, STORE_NAME } from '../config';
 
 const ProductDetail = () => {
@@ -34,6 +34,22 @@ const ProductDetail = () => {
     addToCart(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
+  };
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/product/${product.id}`;
+    const text = `Regarde ce produit chez ${STORE_NAME} : ${product.name} — ${Number(product.price).toLocaleString('fr-HT')} ${CURRENCY}`;
+    // Sur mobile : menu de partage natif (WhatsApp, Insta, etc.)
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: product.name, text, url });
+        return;
+      } catch {
+        return; // l'utilisateur a annulé
+      }
+    }
+    // Sinon : ouvrir WhatsApp directement
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`, '_blank', 'noopener,noreferrer');
   };
 
   const related = products.filter(
@@ -82,6 +98,10 @@ const ProductDetail = () => {
                 ) : (
                   <><ShoppingBag size={18} /> Ajouter au panier</>
                 )}
+              </button>
+
+              <button className="detail-share-btn" onClick={handleShare} title="Partager ce produit" aria-label="Partager">
+                <Share2 size={18} />
               </button>
             </div>
 

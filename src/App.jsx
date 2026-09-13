@@ -1,11 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { ProductProvider } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
 import { SiteContentProvider } from './context/SiteContentContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
+import FloatingWhatsApp from './components/FloatingWhatsApp';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
@@ -36,7 +38,9 @@ function App() {
               </Routes>
             </main>
             <Footer />
+            <FloatingWhatsApp />
           </div>
+          <Analytics />
         </Router>
       </CartProvider>
       </SiteContentProvider>

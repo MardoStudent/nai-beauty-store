@@ -845,6 +845,59 @@
 .admin-empty p { max-width: 360px; }
 .admin-empty .btn-primary { margin-top: 0.8rem; }
 
+/* ============================================
+   SQUELETTES DE CHARGEMENT (loading)
+   ============================================ */
+.skeleton {
+  background: linear-gradient(90deg, #efeae6 25%, #f7f4f1 50%, #efeae6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite;
+  border-radius: 8px;
+}
+.skeleton-img { width: 100%; border-radius: 18px; margin-bottom: 0.9rem; }
+.skeleton-line { height: 12px; border-radius: 6px; margin: 0.45rem 0; }
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+/* --- Bouton Partager (fiche produit) --- */
+.detail-share-btn {
+  width: 52px; flex-shrink: 0; border-radius: 30px;
+  border: 1px solid var(--color-border); background: white; color: var(--color-text);
+  display: inline-flex; align-items: center; justify-content: center; transition: all 0.25s ease;
+}
+.detail-share-btn:hover {
+  border-color: #D48B8B; color: #D48B8B; transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(212,139,139,0.18);
+}
+
+/* ============================================
+   BOUTON WHATSAPP FLOTTANT
+   ============================================ */
+.floating-wa {
+  position: fixed; bottom: 22px; right: 22px; z-index: 900;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366; color: white;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.floating-wa:hover { transform: scale(1.08); box-shadow: 0 12px 30px rgba(37, 211, 102, 0.55); }
+.floating-wa svg { position: relative; z-index: 2; }
+.floating-wa-pulse {
+  position: absolute; inset: 0; border-radius: 50%; background: #25D366;
+  animation: waPulse 2s ease-out infinite; z-index: 1;
+}
+@keyframes waPulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  70% { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .floating-wa-pulse { animation: none; display: none; } }
+@media (min-width: 768px) { .floating-wa { bottom: 28px; right: 28px; width: 60px; height: 60px; } }
+
 /* --- FOOTER --- */
 .footer { background-color: var(--color-text); color: white; padding: 5rem 0 2rem; margin-top: auto; }
 .footer-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 3rem; }
