@@ -656,15 +656,16 @@
   gap: 1.2rem; color: var(--color-text-light); text-align: center; padding: 2rem;
 }
 
-/* Barre livraison gratuite */
-.shipping-bar { padding: 1rem 1.5rem; background: var(--color-primary-light); }
-.shipping-msg { font-size: 0.82rem; color: var(--color-text); margin-bottom: 0.5rem; }
-.shipping-msg.success { color: #2e7d32; font-weight: 600; }
-.shipping-track { height: 6px; background: rgba(255,255,255,0.7); border-radius: 3px; overflow: hidden; }
-.shipping-fill {
-  height: 100%; background: linear-gradient(90deg, #D48B8B, #F4C2C2);
-  border-radius: 3px; transition: width 0.5s ease;
+/* Bandeau de réassurance (panier) */
+.cart-perks {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; justify-content: center;
+  padding: 0.9rem 1.2rem; background: var(--color-primary-light);
 }
+.cart-perk {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.72rem; font-weight: 500; color: var(--color-text);
+}
+.cart-perk svg { color: #D48B8B; }
 
 .cart-items { flex: 1; overflow-y: auto; padding: 0.5rem 1.5rem; }
 .cart-item {

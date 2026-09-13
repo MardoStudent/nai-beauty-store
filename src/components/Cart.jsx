@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
-import { X, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
-import { WHATSAPP_NUMBER, STORE_NAME, CURRENCY, FREE_SHIPPING_THRESHOLD } from '../config';
+import { X, Plus, Minus, Trash2, ShoppingBag, ShieldCheck, Truck, MessageCircle } from 'lucide-react';
+import { WHATSAPP_NUMBER, STORE_NAME, CURRENCY } from '../config';
 
 const formatPrice = (n) => `${Number(n).toLocaleString('fr-HT')} ${CURRENCY}`;
 
@@ -11,9 +11,6 @@ const Cart = () => {
     updateQty, removeFromCart, clearCart,
     totalItems, totalPrice,
   } = useContext(CartContext);
-
-  const remaining = FREE_SHIPPING_THRESHOLD - totalPrice;
-  const freeShipping = remaining <= 0;
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
@@ -60,21 +57,11 @@ const Cart = () => {
           </div>
         ) : (
           <>
-            {/* Barre livraison gratuite */}
-            <div className="shipping-bar">
-              {freeShipping ? (
-                <p className="shipping-msg success">🎉 Livraison gratuite débloquée !</p>
-              ) : (
-                <p className="shipping-msg">
-                  Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison gratuite
-                </p>
-              )}
-              <div className="shipping-track">
-                <div
-                  className="shipping-fill"
-                  style={{ width: `${Math.min(100, (totalPrice / FREE_SHIPPING_THRESHOLD) * 100)}%` }}
-                />
-              </div>
+            {/* Bandeau de réassurance */}
+            <div className="cart-perks">
+              <div className="cart-perk"><ShieldCheck size={15} /> 100% Authentique</div>
+              <div className="cart-perk"><Truck size={15} /> Livraison en Haïti</div>
+              <div className="cart-perk"><MessageCircle size={15} /> Commande sur WhatsApp</div>
             </div>
 
             <div className="cart-items">
