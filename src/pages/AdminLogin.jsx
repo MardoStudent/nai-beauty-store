@@ -9,9 +9,9 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Si déjà connecté, on va directement au tableau de bord
+  // Si déjà connecté dans CETTE session, on va directement au tableau de bord
   useEffect(() => {
-    if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+    if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
       navigate('/admin/dashboard');
     }
   }, [navigate]);
@@ -19,7 +19,7 @@ const AdminLogin = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (pin === ADMIN_PIN) {
-      localStorage.setItem('isAdminLoggedIn', 'true');
+      sessionStorage.setItem('isAdminLoggedIn', 'true');
       navigate('/admin/dashboard');
     } else {
       setError('Code PIN incorrect.');

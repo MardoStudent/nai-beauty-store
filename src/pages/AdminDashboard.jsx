@@ -25,13 +25,13 @@ const AdminDashboard = () => {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
+    if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
       navigate('/admin');
     }
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('isAdminLoggedIn');
+    sessionStorage.removeItem('isAdminLoggedIn');
     navigate('/admin');
   };
 
