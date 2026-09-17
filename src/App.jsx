@@ -5,6 +5,7 @@ import { ProductProvider } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
 import { SiteContentProvider } from './context/SiteContentContext';
 import Navbar from './components/Navbar';
+import AdminBar from './components/AdminBar';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
@@ -25,6 +26,7 @@ function App() {
         <Router>
           <div className="app-container">
             <Navbar />
+            <AdminBar />
             <Cart />
             <main className="main-content">
               <Routes>

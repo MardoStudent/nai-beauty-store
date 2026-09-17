@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Heart, Mail } from 'lucide-react';
 import { CONTACT_EMAIL, INSTAGRAM_URL } from '../config';
 
@@ -12,6 +12,10 @@ const InstagramIcon = ({ size = 18 }) => (
 );
 
 const Footer = () => {
+  const location = useLocation();
+  // Pied de page public masqué dans l'espace admin
+  if (location.pathname.startsWith('/admin')) return null;
+
   return (
     <footer className="footer">
       <div className="container footer-grid">
@@ -42,7 +46,6 @@ const Footer = () => {
             <li><a href={`mailto:${CONTACT_EMAIL}`}>Contactez-nous</a></li>
             <li><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">Instagram</a></li>
             <li><a href="#">Livraison & Retours</a></li>
-            <li><Link to="/admin">Espace Admin</Link></li>
           </ul>
         </div>
         <div className="footer-links-col">

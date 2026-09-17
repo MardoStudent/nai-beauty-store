@@ -719,6 +719,34 @@
 }
 
 /* ============================================
+   BARRE ADMIN dédiée (back-office)
+   ============================================ */
+.admin-bar {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 1200;
+  background: var(--color-text); color: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.admin-bar-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0.7rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.admin-bar-brand { display: flex; align-items: center; gap: 0.6rem; }
+.admin-bar-brand > svg { color: #F4C2C2; }
+.admin-bar-name { font-family: var(--font-heading); font-size: 1.15rem; color: #fff; }
+.admin-bar-badge {
+  font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;
+  background: rgba(255,255,255,0.15); padding: 0.22rem 0.6rem; border-radius: 20px;
+}
+.admin-bar-link {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.8rem; color: rgba(255,255,255,0.85); transition: color 0.2s;
+}
+.admin-bar-link:hover { color: #fff; }
+
+/* Espace pour la barre fixe (les pages admin utilisent pt-32, on ajuste) */
+.admin-dashboard.pt-32 { padding-top: 6.5rem; }
+
+/* ============================================
    ADMIN : onglets + éditeur de contenu
    ============================================ */
 .admin-tabs {
