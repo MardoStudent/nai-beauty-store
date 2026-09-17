@@ -1,10 +1,11 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { ShieldCheck, ExternalLink } from 'lucide-react';
+import { ADMIN_PATH } from '../config';
 
 const AdminBar = () => {
   const location = useLocation();
-  if (!location.pathname.startsWith('/admin')) return null;
+  if (!location.pathname.startsWith(`/${ADMIN_PATH}`)) return null;
 
   return (
     <header className="admin-bar">

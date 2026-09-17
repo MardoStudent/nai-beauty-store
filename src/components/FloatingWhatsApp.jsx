@@ -1,12 +1,12 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { WHATSAPP_NUMBER, STORE_NAME } from '../config';
+import { WHATSAPP_NUMBER, STORE_NAME, ADMIN_PATH } from '../config';
 
 const FloatingWhatsApp = () => {
   const location = useLocation();
 
   // On cache le bouton dans l'espace admin
-  if (location.pathname.startsWith('/admin')) return null;
+  if (location.pathname.startsWith(`/${ADMIN_PATH}`)) return null;
 
   const message = `Bonjour ${STORE_NAME} ! 🌸 J'ai une question.`;
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;

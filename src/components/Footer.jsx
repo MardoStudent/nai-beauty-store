@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Heart, Mail } from 'lucide-react';
-import { CONTACT_EMAIL, INSTAGRAM_URL } from '../config';
+import { CONTACT_EMAIL, INSTAGRAM_URL, ADMIN_PATH } from '../config';
 
 const InstagramIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -14,7 +14,7 @@ const InstagramIcon = ({ size = 18 }) => (
 const Footer = () => {
   const location = useLocation();
   // Pied de page public masqué dans l'espace admin
-  if (location.pathname.startsWith('/admin')) return null;
+  if (location.pathname.startsWith(`/${ADMIN_PATH}`)) return null;
 
   return (
     <footer className="footer">

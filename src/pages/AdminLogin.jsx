@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
+import { ADMIN_PATH } from '../config';
 
 const ADMIN_PIN = '2026';
 
@@ -12,7 +13,7 @@ const AdminLogin = () => {
   // Si déjà connecté dans CETTE session, on va directement au tableau de bord
   useEffect(() => {
     if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-      navigate('/admin/dashboard');
+      navigate(`/${ADMIN_PATH}/dashboard`);
     }
   }, [navigate]);
 
@@ -20,7 +21,7 @@ const AdminLogin = () => {
     e.preventDefault();
     if (pin === ADMIN_PIN) {
       sessionStorage.setItem('isAdminLoggedIn', 'true');
-      navigate('/admin/dashboard');
+      navigate(`/${ADMIN_PATH}/dashboard`);
     } else {
       setError('Code PIN incorrect.');
       setPin('');

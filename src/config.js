@@ -15,3 +15,7 @@ export const FREE_SHIPPING_THRESHOLD = 75000;
 // Coordonnées de contact
 export const CONTACT_EMAIL = 'maceannaika509@gmail.com';
 export const INSTAGRAM_URL = 'https://www.instagram.com/naibeauty_store';
+
+// Adresse secrète de l'espace admin (sans / ni espaces).
+// Ton admin sera accessible sur : ton-site.com/<ADMIN_PATH>
+export const ADMIN_PATH = 'coulisses';

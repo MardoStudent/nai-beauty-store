@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
+import { ADMIN_PATH } from '../config';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,7 +10,7 @@ const Navbar = () => {
   const { totalItems, openCart } = useContext(CartContext);
 
   // Barre publique masquée dans l'espace admin (il a sa propre barre)
-  if (location.pathname.startsWith('/admin')) return null;
+  if (location.pathname.startsWith(`/${ADMIN_PATH}`)) return null;
 
   return (
     <nav className="navbar">

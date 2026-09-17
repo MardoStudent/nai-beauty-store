@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductContext } from '../context/ProductContext';
 import { LogOut, Plus, Trash2, Edit2, Upload, X, Package, LayoutTemplate, Search, PackageOpen, ImageOff } from 'lucide-react';
-import { CURRENCY } from '../config';
+import { CURRENCY, ADMIN_PATH } from '../config';
 import SiteContentEditor from '../components/SiteContentEditor';
 import { readImageAsDataUrl } from '../utils/image';
 import { compressImage } from '../utils/compressImage';
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
-      navigate('/admin');
+      navigate(`/${ADMIN_PATH}`);
     }
   }, [navigate]);
 
